@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React from "react";
+import React, { useEffect } from "react";
 import { deleteProject, getProject } from "../../../apis/projectAPI";
 import Loading from "../../../components/Loading";
 import {
@@ -36,6 +36,8 @@ import { TablePaginationActions } from "../../../components/TablePaginationActio
 import { AlertJiraFilled } from "../../../components/styled/styledAlert";
 import { useNavigate } from "react-router-dom";
 import PopperModal from "../../../components/Popper/PopperModal";
+import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
+import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
 
 // import component 👇
 import Drawer from "react-modern-drawer";
@@ -59,13 +61,25 @@ export default function ProjectManagementDesktop() {
   const [isMember, setIsMember] = React.useState(false);
   const [anchorElAddMember, setAnchorElAddMember] = React.useState(null);
   const [isAddMember, setIsAddMember] = React.useState(false);
+  const [members, setMembers] = React.useState([]);
+  const [projectIdDeleteMember, setProjectIdDeleteMember] = React.useState("");
+  const [searchValue, setSearchValue] = React.useState("");
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [sortOrder, setSortOrder] = React.useState("none");
+  const [sortedData, setSortedData] = React.useState([]);
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const { data: projectManagement = [], isLoading } = useQuery({
-    queryKey: ["projectManaDesktop"],
-    queryFn: getProject,
+    queryKey: ["projectManaDesktop", searchValue],
+    queryFn: () => {
+      if (searchValue) {
+        const result = getProject(searchValue);
+        return result;
+      }
+      return getProject();
+    },
   });
 
   const { mutate: handleDeleteProject, error } = useMutation({
@@ -80,6 +94,9 @@ export default function ProjectManagementDesktop() {
       setIsDelete(false);
     },
   });
+
+  // Biến kiểm tra xem sortedData có rỗng thì sẽ render ra projectManagement
+  const displayData = sortedData.length ? sortedData : projectManagement;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -150,6 +167,39 @@ export default function ProjectManagementDesktop() {
     setIsMember(false);
   };
 
+  const handleChangeValue = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setSearchValue(searchQuery);
+    sortData(sortOrder);
+  };
+
+  const sortData = (order) => {
+    if (order === "none") {
+      setSortedData([]);
+      setSortOrder(order);
+    } else {
+      const sorted = [...projectManagement].filter((project) =>
+        project.alias.toLowerCase().includes(searchValue.toLowerCase())
+      );
+
+      if (order === "asc") {
+        sorted.sort((a, b) => a.alias.localeCompare(b.alias));
+        setSortedData(sorted);
+        setSortOrder(order);
+      } else if (order === "desc") {
+        sorted.sort((a, b) => b.alias.localeCompare(a.alias));
+        setSortedData(sorted);
+        setSortOrder(order);
+      }
+      setSortedData(sorted);
+      setSortedData(sorted);
+    }
+  };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -165,14 +215,19 @@ export default function ProjectManagementDesktop() {
             marginRight: "16px",
             display: "flex",
           }}
+          component="form"
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit}
         >
           <TextField
             fullWidth
             label="Search Name"
-            id="fullWidth"
             color="secondary"
+            value={searchQuery}
+            onChange={handleChangeValue}
           />
-          <Button variant="contained" color="info">
+          <Button variant="contained" color="info" type="submit">
             <SearchIcon />
           </Button>
         </Box>
@@ -193,8 +248,44 @@ export default function ProjectManagementDesktop() {
               <StyledTableCell component="th" scope="row" sx={{ width: "10%" }}>
                 Id
               </StyledTableCell>
-              <StyledTableCell component="th" scope="row" sx={{ width: "20%" }}>
-                Name
+              <StyledTableCell
+                component="th"
+                scope="row"
+                sx={{
+                  width: "20%",
+                  cursor: "pointer",
+                  transition: "all 0.5s",
+                  "&:hover": { backgroundColor: "#000000c0 !important" },
+                }}
+                onClick={() => {
+                  if (sortOrder === "none") {
+                    sortData("asc"); // Khi nhấn lần đầu, sắp xếp tăng dần
+                  } else if (sortOrder === "asc") {
+                    sortData("desc"); // Khi nhấn lần 2, sắp xếp giảm dần
+                  } else {
+                    sortData("none"); // Khi nhấn lần 3, trở về trạng thái không sắp xếp
+                  }
+                }}
+              >
+                <Box display={"flex"} alignItems={"center"}>
+                  Name
+                  {sortOrder === "desc" && <KeyboardArrowDownOutlinedIcon />}
+                  {sortOrder === "asc" && <KeyboardArrowUpOutlinedIcon />}
+                  {sortOrder === "none" && (
+                    <Box
+                      display={"flex"}
+                      flexDirection={"column"}
+                      position={"relative"}
+                    >
+                      <KeyboardArrowUpOutlinedIcon
+                        sx={{ position: "absolute", top: "-16px" }}
+                      />
+                      <KeyboardArrowDownOutlinedIcon
+                        sx={{ position: "absolute", bottom: "-16px" }}
+                      />
+                    </Box>
+                  )}
+                </Box>
               </StyledTableCell>
               <StyledTableCell component="th" scope="row" sx={{ width: "20%" }}>
                 Category
@@ -212,11 +303,11 @@ export default function ProjectManagementDesktop() {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? projectManagement.slice(
+              ? displayData.slice(
                   page * rowsPerPage,
                   page * rowsPerPage + rowsPerPage
                 )
-              : projectManagement
+              : displayData
             ).map((project) => (
               <StyledTableRow
                 key={project.id}
@@ -242,6 +333,8 @@ export default function ProjectManagementDesktop() {
                         handleClickMember(event);
                         setIsMember(true);
                         setIsAddMember(false);
+                        setMembers(project.members);
+                        setProjectIdDeleteMember(project.id);
                       }}
                       sx={{ display: "flex", alignItems: "center" }}
                     >
@@ -278,6 +371,7 @@ export default function ProjectManagementDesktop() {
                         handleClickAddMember(event);
                         setIsAddMember(true);
                         setIsMember(false);
+                        setProjectIdDeleteMember(project.id);
                       }}
                     >
                       <AddIcon />
@@ -403,7 +497,7 @@ export default function ProjectManagementDesktop() {
         handleDeleteProject={handleDeleteProject}
         projectId={projectIdDelete}
         name={projectNameDelete}
-        isDelete={isDelete}
+        isDeleteProject={isDelete}
       />
 
       {/* Modal hiển thị danh sách member */}
@@ -412,6 +506,8 @@ export default function ProjectManagementDesktop() {
         handleClose={handleCloseMember}
         anchorEl={anchorElMember}
         isMember={isMember}
+        members={members}
+        projectIdDeleteMember={projectIdDeleteMember}
       />
 
       {/* Modal hiển thị add member */}
@@ -419,6 +515,7 @@ export default function ProjectManagementDesktop() {
         handleClose={handleCloseAddMember}
         anchorEl={anchorElAddMember}
         isAddMember={isAddMember}
+        projectIdAddMember={projectIdDeleteMember}
       />
     </>
   );
