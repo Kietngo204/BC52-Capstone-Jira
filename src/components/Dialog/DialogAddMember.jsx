@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Snackbar,
   Stack,
@@ -32,7 +31,7 @@ export default function DialogAddMember(props) {
   const queryClient = useQueryClient();
 
   const { data: users = [] } = useQuery({
-    queryKey: ["getUser", value],
+    queryKey: ["getUserMobile", value],
     queryFn: async () => {
       if (value) {
         // Gọi API để tìm kiếm người dùng dựa trên giá trị `value`
@@ -53,6 +52,7 @@ export default function DialogAddMember(props) {
       setOpenSuccessAddMember(true);
       handleClosePopper();
       queryClient.invalidateQueries("projectManaMobile");
+      queryClient.invalidateQueries(["getUserMobile", value]);
     },
   });
 
@@ -81,7 +81,7 @@ export default function DialogAddMember(props) {
   return (
     <>
       <Dialog open={open} onClose={handleClose} sx={{ width: "100%" }}>
-        <Box sx={{ maxWidth: "600px", minWidth: "500px" }}>
+        <Box sx={{ maxWidth: "600px", minWidth: "350px" }}>
           <DialogTitle>Add Member</DialogTitle>
           <DialogContent>
             <TextField
@@ -92,10 +92,11 @@ export default function DialogAddMember(props) {
               type="email"
               fullWidth
               variant="standard"
+              noValidate
               onChange={handleChange}
               value={value}
             />
-            <Box sx={{ overflow: "auto", maxHeight: "60vh" }}>
+            <Box sx={{ overflow: "scroll", maxHeight: "60vh", width: "100%" }}>
               {users.map((user) => {
                 return (
                   <Box
@@ -120,7 +121,9 @@ export default function DialogAddMember(props) {
                     }}
                   >
                     <Avatar alt={user.name} src={user.avatar} />
-                    <Typography>{user.name}</Typography>
+                    <Typography sx={{ paddingRight: "5px" }}>
+                      {user.name}
+                    </Typography>
                   </Box>
                 );
               })}

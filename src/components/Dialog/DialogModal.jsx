@@ -12,6 +12,8 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Snackbar,
+  Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -24,13 +26,47 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import DialogAddMember from "./DialogAddMember";
 import LoadingCircular from "../Loading/LoadingCircular";
+import PopperModal from "../Popper/PopperModal";
+import { AlertJiraFilled } from "../styled/styledAlert";
+import { removeUserFromProject } from "../../apis/projectAPI";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function DialogModal(props) {
   const { open, handleClose, project } = props;
 
-  const [openMember, setOpenMember] = useState(true);
+  // Add Member
+  const [openMember, setOpenMember] = useState(false);
   const [openAddMember, setOpenAddMember] = useState(false);
 
+  // Delete Member
+  const [anchorElDeleteMember, setAnchorElDeleteMember] = React.useState(null);
+  const [isDeleteMember, setIsDeleteMember] = React.useState(false);
+  const [openErrorDeleteMember, setOpenErrorDeleteMember] =
+    React.useState(false);
+  const [openSuccessDeleteMember, setOpenSuccessDeleteMember] =
+    React.useState(false);
+
+  const [member, setMember] = useState([]);
+
+  const queryClient = useQueryClient();
+
+  const { mutate: handleRemoveUserFromProject, error } = useMutation({
+    mutationFn: (project) => {
+      return removeUserFromProject(project);
+    },
+    onError: () => {
+      setOpenErrorDeleteMember(true);
+      handleCloseMember();
+    },
+    onSuccess: () => {
+      setOpenSuccessDeleteMember(true);
+      handleCloseMember();
+      queryClient.invalidateQueries("projectManaDesktop");
+      queryClient.invalidateQueries("getUserMobile");
+    },
+  });
+
+  // Add Member
   const handleClickMember = () => {
     setOpenMember(!openMember);
   };
@@ -41,6 +77,26 @@ export default function DialogModal(props) {
 
   const handleCloseAddMember = () => {
     setOpenAddMember(false);
+  };
+
+  // Delete Member
+
+  const handleClickDeleteMember = (event) => {
+    setAnchorElDeleteMember(anchorElDeleteMember ? null : event.currentTarget);
+  };
+
+  const handleCloseMember = () => {
+    setAnchorElDeleteMember(null);
+    setIsDeleteMember(false);
+  };
+
+  // Hàm đóng Alert thông báo
+  const handleCloseDeleteMember = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenErrorDeleteMember(false);
+    setOpenSuccessDeleteMember(false);
   };
   console.log(project);
 
@@ -211,7 +267,14 @@ export default function DialogModal(props) {
                       </Typography>
                     </Box>
 
-                    <IconButton sx={{ paddingRight: "30px" }}>
+                    <IconButton
+                      sx={{ paddingRight: "30px" }}
+                      onClick={(event) => {
+                        handleClickDeleteMember(event);
+                        setIsDeleteMember(true);
+                        setMember(member);
+                      }}
+                    >
                       <HighlightOffOutlinedIcon color="error" />
                     </IconButton>
                   </Box>
@@ -224,6 +287,47 @@ export default function DialogModal(props) {
         </List>
       </Dialog>
 
+      {/* Modal nhắc nhở có nên xóa member */}
+      <PopperModal
+        anchorEl={anchorElDeleteMember}
+        handleClose={handleCloseMember}
+        handleRemoveUserFromProject={handleRemoveUserFromProject}
+        member={member}
+        isDeleteMember={isDeleteMember}
+        projectIdDeleteMember={project.id}
+      />
+
+      {/* Alert thông báo lỗi và thành công */}
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar
+          open={openSuccessDeleteMember}
+          autoHideDuration={2000}
+          onClose={handleCloseDeleteMember}
+        >
+          <AlertJiraFilled
+            onClose={handleCloseDeleteMember}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Xóa member thành công
+          </AlertJiraFilled>
+        </Snackbar>
+        <Snackbar
+          open={openErrorDeleteMember}
+          autoHideDuration={2000}
+          onClose={handleCloseDeleteMember}
+        >
+          <AlertJiraFilled
+            onClose={handleCloseDeleteMember}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </AlertJiraFilled>
+        </Snackbar>
+      </Stack>
+
+      {/* Modal AddMember */}
       <DialogAddMember
         handleClose={handleCloseAddMember}
         open={openAddMember}

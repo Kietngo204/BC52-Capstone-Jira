@@ -119,9 +119,6 @@ export default function PopperModal(props) {
                 left: "47%",
                 width: 0,
                 height: 0,
-                borderLeft: "10px solid transparent",
-                borderRight: "10px solid transparent",
-                borderTop: "10px solid red",
               }}
             />
             <Box sx={{ display: "flex", alignItems: "center" }}>
