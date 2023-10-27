@@ -1,14 +1,6 @@
-import {
-  Box,
-  Button,
-  Popper,
-  Snackbar,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Popper, Typography } from "@mui/material";
 import React from "react";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import { AlertJiraFilled } from "../styled/styledAlert";
 
 export default function PopperModal(props) {
   const {
@@ -36,7 +28,7 @@ export default function PopperModal(props) {
         open={open}
         anchorEl={anchorEl}
         sx={{
-          zIndex: 1070,
+          zIndex: 11000,
           paddingBottom: "10px",
         }}
         placement="top"

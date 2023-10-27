@@ -5,11 +5,15 @@ import { getProject } from "../../../apis/projectAPI";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import Loading from "../../../components/Loading";
 import DialogModal from "../../../components/Dialog/DialogModal";
+import { useNavigate } from "react-router-dom";
 
 export default function ProjectManagementMobile() {
   const [searchText, setSearchText] = useState(""); // State để lưu giá trị từ ô tìm kiếm
   const [openProjectSetting, setOpenProjectSetting] = useState(false);
-  const [projectSetting, setProjectSetting] = useState([]);
+  const [projectSetting, setProjectSetting] = useState(null);
+  const [isOpenEdit, setIsOpenEdit] = React.useState(false);
+
+  const navigate = useNavigate();
 
   const { data: projectManagement = [], isLoading } = useQuery({
     queryKey: ["projectManaMobile"],
@@ -27,7 +31,22 @@ export default function ProjectManagementMobile() {
 
   const handleCloseProjectSetting = () => {
     setOpenProjectSetting(false);
+    setIsOpenEdit(false);
   };
+
+  React.useEffect(() => {
+    // Tìm dự án cụ thể dựa trên ID trong projectManagement
+    const selectedProject = projectManagement.find(
+      (project) => project.id === projectSetting
+    );
+
+    if (selectedProject) {
+      // Nếu tìm thấy, cập nhật projectSetting với dự án cụ thể
+      setProjectSetting(selectedProject);
+    } else {
+      // Nếu không tìm thấy, có thể đặt projectSetting thành một giá trị mặc định hoặc thực hiện xử lý khác tùy thuộc vào yêu cầu của bạn.
+    }
+  }, [projectManagement, projectSetting]);
 
   if (isLoading) {
     return <Loading />;
@@ -81,6 +100,15 @@ export default function ProjectManagementMobile() {
                   fontWeight: "600",
                   lineHeight: "1.75rem",
                   padding: "15px",
+                  cursor: "pointer",
+                  transition: "all 0.5s",
+
+                  ":hover": {
+                    color: "#e65353",
+                  },
+                }}
+                onClick={() => {
+                  navigate(`/projectDetail/${project.id}`);
                 }}
               >
                 {project.projectName}
@@ -94,8 +122,9 @@ export default function ProjectManagementMobile() {
                   alignItems: "center",
                 }}
                 onClick={() => {
-                  setProjectSetting(project);
+                  setProjectSetting(project.id);
                   handleClickOpenProjectSetting();
+                  setIsOpenEdit(true);
                 }}
               >
                 <SettingsOutlinedIcon />
@@ -111,6 +140,9 @@ export default function ProjectManagementMobile() {
         open={openProjectSetting}
         handleClose={handleCloseProjectSetting}
         project={projectSetting}
+        setProjectSetting={setProjectSetting}
+        projectManagement={projectManagement}
+        isOpenEdit={isOpenEdit}
       />
     </>
   );

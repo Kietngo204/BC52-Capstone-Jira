@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import React from "react";
 import { deleteProject, getProject } from "../../../apis/projectAPI";
 import Loading from "../../../components/Loading";
 import {
@@ -35,16 +35,16 @@ import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import { TablePaginationActions } from "../../../components/TablePaginationActions/TablePaginationActions";
 import { AlertJiraFilled } from "../../../components/styled/styledAlert";
 import { useNavigate } from "react-router-dom";
-import PopperModal from "../../../components/Popper/PopperModal";
+
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
-
+import PopperModal from "../../../components/Popper/PopperModal";
+import PopoverModal from "../../../components/Popover/PopoverModal";
 // import component 👇
 import Drawer from "react-modern-drawer";
 
 //import styles 👇
 import "react-modern-drawer/dist/index.css";
-import PopoverModal from "../../../components/Popover/PopoverModal";
 
 export default function ProjectManagementDesktop() {
   const [page, setPage] = React.useState(0);
@@ -175,6 +175,7 @@ export default function ProjectManagementDesktop() {
     event.preventDefault();
     setSearchValue(searchQuery);
     sortData(sortOrder);
+    setPage(0);
   };
 
   const sortData = (order) => {
@@ -381,12 +382,15 @@ export default function ProjectManagementDesktop() {
 
                 <StyledTableCell>
                   <Box display={"flex"}>
-                    <Tooltip title="Details">
+                    <Tooltip title="Detail">
                       <Fab
                         color="warning"
                         aria-label="details"
                         size="small"
                         sx={{ marginRight: "5px" }}
+                        onClick={() => {
+                          navigate(`/projectDetail/${project.id}`);
+                        }}
                       >
                         <ArticleOutlinedIcon fontSize="small" />
                       </Fab>
@@ -450,6 +454,8 @@ export default function ProjectManagementDesktop() {
           </TableFooter>
         </Table>
       </TableContainer>
+
+      {/* Edit project */}
       <Drawer
         open={isOpenEdit}
         onClose={toggleDrawerEditClose}

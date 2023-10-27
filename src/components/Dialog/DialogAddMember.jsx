@@ -19,7 +19,13 @@ import { AlertJiraFilled } from "../styled/styledAlert";
 import PopperModal from "../Popper/PopperModal";
 
 export default function DialogAddMember(props) {
-  const { handleClose, open, projectIdAddMember } = props;
+  const {
+    handleClose,
+    open,
+    projectIdAddMember,
+    projectManagement,
+    setProjectSetting,
+  } = props;
 
   const [value, setValue] = useState("");
   const [anchorElAddMember, setAnchorEAddMember] = React.useState(null);
@@ -52,7 +58,6 @@ export default function DialogAddMember(props) {
       setOpenSuccessAddMember(true);
       handleClosePopper();
       queryClient.invalidateQueries("projectManaMobile");
-      queryClient.invalidateQueries(["getUserMobile", value]);
     },
   });
 
@@ -78,6 +83,20 @@ export default function DialogAddMember(props) {
     setOpenErrorAddMember(false);
     setOpenSuccessAddMember(false);
   };
+
+  React.useEffect(() => {
+    const selectedProject = projectManagement.find(
+      (project) => project?.id === projectIdAddMember
+    );
+
+    if (selectedProject) {
+      // Nếu tìm thấy, cập nhật projectSetting với dự án cụ thể
+      setProjectSetting(selectedProject);
+    } else {
+      // Nếu không tìm thấy, có thể đặt projectSetting thành một giá trị mặc định hoặc thực hiện xử lý khác tùy thuộc vào yêu cầu của bạn.
+    }
+  }, projectManagement);
+
   return (
     <>
       <Dialog open={open} onClose={handleClose} sx={{ width: "100%" }}>

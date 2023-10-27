@@ -1,8 +1,8 @@
-import { Box, Chip, Popover, Typography } from "@mui/material";
+import { Box, Chip, Popover } from "@mui/material";
 import React from "react";
 
-import ProjectMember from "../../modules/ProjectManagement/ProjectManagementDesktop/ProjectMember";
-import ProjectAddMember from "../../modules/ProjectManagement/ProjectManagementDesktop/ProjectAddMember";
+import ProjectMember from "../../../modules/ProjectManagement/ProjectManagementDesktop/ProjectMember";
+import ProjectAddMember from "../../../modules/ProjectManagement/ProjectManagementDesktop/ProjectAddMember";
 
 export default function PopoverModal(props) {
   const {

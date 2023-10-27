@@ -7,6 +7,7 @@ import UserProvider from "./contexts/UserContext/UserContext";
 import ProtectedRoute from "./routers/ProtectedRoute";
 import NotFound from "./components/NotFound";
 import CreateProject from "./modules/ProjectManagement/CreateProject";
+import ProjectDetail from "./modules/ProjectManagement/ProjectDetail";
 
 function App() {
   return (
@@ -20,6 +21,10 @@ function App() {
                 element={<ProjectManagement />}
               />
               <Route path="/createProject" element={<CreateProject />} />
+              <Route
+                path="/projectDetail/:projectId"
+                element={<ProjectDetail />}
+              />
             </Route>
           </Route>
 

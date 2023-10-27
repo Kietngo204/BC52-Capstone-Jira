@@ -36,7 +36,6 @@ export default function SideBar({
     } else if (text === "Project Management") {
       navigate("/projectManagement");
     } else if (text === "Project Detail") {
-      navigate("/projectDetails");
     } else if (text === "My Profile") {
       navigate("/profile");
     } else if (text === "User Management") {
@@ -48,7 +47,8 @@ export default function SideBar({
     const pathname = location.pathname;
     if (pathname === "/createProject") {
       setSelectedItem("Create Project");
-    } else if (pathname === "/projectDetails") {
+    } else if (pathname.startsWith("/projectDetail/")) {
+      // Kiểm tra xem địa chỉ bắt đầu bằng '/projectDetail/' để kích hoạt nút
       setSelectedItem("Project Detail");
     } else if (pathname === "/profile") {
       setSelectedItem("My Profile");
@@ -101,6 +101,10 @@ export default function SideBar({
 
                 "&:hover": { color: "#ee7e9e" },
               }}
+              disabled={
+                text === "Project Detail" &&
+                !location.pathname.startsWith("/projectDetail/")
+              }
             >
               <ListItemIcon>{React.createElement(icons[index])}</ListItemIcon>
               <ListItemText primary={text} />
