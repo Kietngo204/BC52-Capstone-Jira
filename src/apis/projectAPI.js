@@ -87,3 +87,12 @@ export const assignUserProject = async (project) => {
     throw error.response.data?.content;
   }
 };
+
+export const updateStatus = async (payload) => {
+  try {
+    const response = await fetcher.put("/Project/updateStatus", payload);
+    return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};

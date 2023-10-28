@@ -8,6 +8,7 @@ import ProtectedRoute from "./routers/ProtectedRoute";
 import NotFound from "./components/NotFound";
 import CreateProject from "./modules/ProjectManagement/CreateProject";
 import ProjectDetail from "./modules/ProjectManagement/ProjectDetail";
+import Profile from "./modules/Profile";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
                 path="/projectDetail/:projectId"
                 element={<ProjectDetail />}
               />
+              <Route path="/profile" element={<Profile />} />
             </Route>
           </Route>
 
