@@ -21,19 +21,16 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
 import Loading from "../../../components/Loading";
 import { useNavigate } from "react-router-dom";
-import { useUserContext } from "../../../contexts/UserContext/UserContext";
 
 export default function CreateProject() {
   const [openError, setOpenError] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
 
-  const { currentUser } = useUserContext();
-
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
 
-  const editProjectSchema = object({
+  const CreateProjectSchema = object({
     projectName: string().required("Name must not be empty"),
   });
 
@@ -54,7 +51,7 @@ export default function CreateProject() {
       description: "",
       categoryId: "",
     },
-    resolver: yupResolver(editProjectSchema),
+    resolver: yupResolver(CreateProjectSchema),
     mode: "onTouched",
   });
 
@@ -73,10 +70,6 @@ export default function CreateProject() {
   });
 
   const onSubmit = (values) => {
-    // const newValues = {
-    //   ...values,
-    //   //   alias: values.projectName,
-    // };
     const categoryId = Number(values.categoryId);
     console.log({ ...values, categoryId });
     handleCreateProject({ ...values, categoryId });

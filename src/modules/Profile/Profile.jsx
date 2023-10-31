@@ -65,7 +65,6 @@ function Profile() {
           {groups.map((group) => (
             <Droppable key={group} droppableId={group}>
               {(provided, snapshot) => {
-                console.log(provided);
                 return (
                   <div
                     ref={provided.innerRef}

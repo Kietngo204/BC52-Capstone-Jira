@@ -27,6 +27,7 @@ export default function PopoverListMember(props) {
                 alignItems: "center",
                 justifyContent: "space-between",
                 marginBottom: "5px",
+                padding: "0 15px",
               }}
             >
               <Avatar alt={member.name} src={member.avatar} />

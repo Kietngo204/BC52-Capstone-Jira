@@ -9,6 +9,7 @@ import NotFound from "./components/NotFound";
 import CreateProject from "./modules/ProjectManagement/CreateProject";
 import ProjectDetail from "./modules/ProjectManagement/ProjectDetail";
 import Profile from "./modules/Profile";
+import UserManagement from "./modules/UserManagement/UserManagement";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
                 element={<ProjectDetail />}
               />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/user" element={<UserManagement />} />
             </Route>
           </Route>
 

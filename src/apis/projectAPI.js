@@ -96,3 +96,43 @@ export const updateStatus = async (payload) => {
     throw error.response.data?.content;
   }
 };
+
+export const createTask = async (payload) => {
+  try {
+    const response = await fetcher.post("/Project/createTask", payload);
+    return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
+
+export const getTaskDetail = async (taskId) => {
+  try {
+    const response = await fetcher.get("/Project/getTaskDetail", {
+      params: { taskId: taskId },
+    });
+    return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
+
+export const updateTask = async (payload) => {
+  try {
+    const response = await fetcher.post("/Project/updateTask", payload);
+    return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.message;
+  }
+};
+
+export const removeTask = async (taskId) => {
+  try {
+    const response = await fetcher.delete("/Project/removeTask", {
+      params: { taskId: taskId },
+    });
+    return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.message;
+  }
+};

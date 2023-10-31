@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProjectDetail, updateStatus } from "../../../apis/projectAPI";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "../../../components/Loading";
 import AddIcon from "@mui/icons-material/Add";
 import {
@@ -21,32 +21,43 @@ import BugReportIcon from "@mui/icons-material/BugReport";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import NorthIcon from "@mui/icons-material/North";
 import SouthIcon from "@mui/icons-material/South";
+import EastIcon from "@mui/icons-material/East";
+import SouthEastIcon from "@mui/icons-material/SouthEast";
 
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useEffect } from "react";
+import DialogCreateTask from "../../../components/Dialog/DialogCreateTask";
+import DialogEditTask from "../../../components/Dialog/DialogEditTask";
 
 export default function ProjectDetail() {
   const { projectId } = useParams();
 
+  const queryClient = useQueryClient();
+
   const [anchorElListMember, setAnchorElListMember] = useState(null);
+  const [openCreateTask, setOpenCreateTask] = useState(false);
+  const [openEditTask, setOpenEditTask] = useState(false);
+  const [taskId, setTaskId] = useState("");
 
   const { data: projectDetail = [], isLoading } = useQuery({
-    queryKey: ["projectEdit", projectId],
+    queryKey: ["getProjectDetail", projectId],
     queryFn: () => getProjectDetail(projectId),
     enabled: !!projectId,
   });
 
-  const handleUpdateStatus = async (taskId, statusId) => {
-    try {
-      const response = await updateStatus({
-        taskId: taskId,
-        statusId: statusId,
-      });
-      return response.data?.content;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { mutate: handleUpdateStatus, error } = useMutation({
+    mutationFn: (payload) =>
+      updateStatus({
+        taskId: payload[0],
+        statusId: payload[1],
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries("getProjectDetail");
+    },
+    onError: () => {
+      alert(error);
+    },
+  });
 
   const [items, setItems] = useState({});
 
@@ -59,7 +70,24 @@ export default function ProjectDetail() {
     setAnchorElListMember(null);
   };
 
-  console.log(projectDetail);
+  // Create Task
+
+  const handleClickOpenCreateTask = () => {
+    setOpenCreateTask(true);
+  };
+  const handleCloseCreateTask = () => {
+    setOpenCreateTask(false);
+  };
+
+  // Edit Task
+
+  const handleClickOpenEditTask = () => {
+    setOpenEditTask(true);
+  };
+  const handleCloseEditTask = () => {
+    setOpenEditTask(false);
+  };
+  // Quản lí task
 
   const onDragEnd = (result) => {
     const { source, destination, draggableId, taskId } = result;
@@ -80,12 +108,14 @@ export default function ProjectDetail() {
     const draggedItem = Object.values(items).find((status) =>
       status.find((item) => item.taskName === taskName)
     );
-
+    const findTaskId = draggedItem.find(
+      (item) => item.taskName === draggableId
+    );
     if (sourceStatus !== destinationStatus) {
       console.log("taskId: ", taskId);
       console.log("destinationStatus: ", destinationStatus);
       // Nếu công việc đã bị kéo vào một nhóm khác, gọi API để cập nhật trạng thái
-      handleUpdateStatus(draggedItem[0].taskId, destinationStatus);
+      handleUpdateStatus([findTaskId.taskId, destinationStatus]);
     }
 
     if (source.droppableId === destination.droppableId) {
@@ -127,6 +157,46 @@ export default function ProjectDetail() {
     return text;
   }
 
+  function PriorityArrow(priorityName) {
+    if (priorityName === "High") {
+      return (
+        <NorthIcon
+          sx={{
+            fontSize: "14px",
+            margin: "0 5px",
+          }}
+        />
+      );
+    } else if (priorityName === "Medium") {
+      return (
+        <EastIcon
+          sx={{
+            fontSize: "14px",
+            margin: "0 5px",
+          }}
+        />
+      );
+    } else if (priorityName === "Low") {
+      return (
+        <SouthEastIcon
+          sx={{
+            fontSize: "14px",
+            margin: "0 5px",
+          }}
+        />
+      );
+    } else {
+      return (
+        <SouthIcon
+          sx={{
+            fontSize: "14px",
+            margin: "0 5px",
+          }}
+        />
+      );
+    }
+  }
+
   useEffect(() => {
     if (projectDetail && projectDetail.lstTask) {
       const initialItems = {};
@@ -137,6 +207,7 @@ export default function ProjectDetail() {
     }
   }, [projectDetail]);
 
+  // console.log(projectDetail);
   if (isLoading) {
     return <Loading />;
   }
@@ -215,12 +286,16 @@ export default function ProjectDetail() {
               variant="contained"
               startIcon={<AddIcon />}
               sx={{ marginLeft: "8px" }}
+              onClick={() => {
+                handleClickOpenCreateTask();
+              }}
             >
               Task
             </Button>
           </Box>
         </Box>
 
+        {/* Quản lí và hiển thị task */}
         <Box
           sx={{
             display: "grid",
@@ -243,7 +318,13 @@ export default function ProjectDetail() {
                   {(provided, snapshot) => {
                     return (
                       <Box
-                        sx={{ padding: "0 8px", backgroundColor: "#f4f5f7" }}
+                        sx={{
+                          padding: "0 8px",
+                          backgroundColor: "#f4f5f7",
+                          borderRadius: "5px",
+                          boxShadow:
+                            "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;",
+                        }}
                         ref={provided.innerRef}
                       >
                         <Box sx={{ padding: "0 8px" }}>
@@ -283,7 +364,6 @@ export default function ProjectDetail() {
                             </Typography>
                           </Box>
                           {status.map((item, index) => {
-                            console.log(item);
                             return (
                               <Draggable
                                 key={item.taskName}
@@ -296,6 +376,10 @@ export default function ProjectDetail() {
                                       ref={provided.innerRef}
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
+                                      onClick={() => {
+                                        handleClickOpenEditTask();
+                                        setTaskId(item.taskId);
+                                      }}
                                       sx={{
                                         userSelect: "none",
                                         padding: "12px",
@@ -351,28 +435,19 @@ export default function ProjectDetail() {
                                               sx={{ fontSize: "17px" }}
                                             />
                                           )}
-                                          {item.priorityTask.priority ===
-                                          "Medium" ? (
-                                            <NorthIcon
-                                              sx={{
-                                                fontSize: "14px",
-                                                margin: "0 5px",
-                                              }}
-                                            />
-                                          ) : (
-                                            <SouthIcon
-                                              sx={{
-                                                fontSize: "14px",
-                                                margin: "0 5px",
-                                              }}
-                                            />
+                                          {PriorityArrow(
+                                            item.priorityTask.priority
                                           )}
+
                                           <Typography sx={{ fontSize: "12px" }}>
                                             {item.priorityTask.priority}
                                           </Typography>
                                         </Box>
 
-                                        <Box display={"flex"}>
+                                        <Box
+                                          display={"flex"}
+                                          alignItems={"center"}
+                                        >
                                           {item.assigness
                                             .slice(0, 2)
                                             .map((member) => {
@@ -385,18 +460,20 @@ export default function ProjectDetail() {
                                                 />
                                               );
                                             })}
-                                          {projectDetail.members.length > 2 && (
+                                          {item.assigness.length > 2 && (
                                             <Fab
-                                              size="small"
+                                              size="large"
                                               color="warning"
                                               aria-label="add"
                                               sx={{
                                                 boxShadow: "none",
-                                                marginRight: "3px",
+                                                // marginRight: "3px",
+                                                width: 29,
+                                                minHeight: 20,
+                                                height: 29,
                                               }}
                                             >
-                                              +
-                                              {projectDetail.members.length - 2}
+                                              +{item.assigness.length - 2}
                                             </Fab>
                                           )}
                                         </Box>
@@ -419,9 +496,26 @@ export default function ProjectDetail() {
           </DragDropContext>
         </Box>
       </Box>
+
       <PopoverListMember
         anchorEl={anchorElListMember}
         handleClose={handleCloseListMember}
+        projectDetail={projectDetail}
+      />
+
+      {/* Create Task */}
+      <DialogCreateTask
+        open={openCreateTask}
+        handleClose={handleCloseCreateTask}
+        projectId={projectId}
+        projectDetail={projectDetail}
+      />
+
+      {/* Edit Task */}
+      <DialogEditTask
+        open={openEditTask}
+        handleClose={handleCloseEditTask}
+        taskId={taskId}
         projectDetail={projectDetail}
       />
     </>
