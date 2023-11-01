@@ -18,6 +18,10 @@ export default function PopperModal(props) {
     projectIdAddMember,
     user,
     handleAddMember,
+    handleDeleteUser,
+    isDeleteUser,
+    userId,
+    userName,
   } = props;
 
   const open = Boolean(anchorEl);
@@ -218,6 +222,68 @@ export default function PopperModal(props) {
           </Box>
         </Popper>
       </>
+    );
+  } else if (isDeleteUser) {
+    return (
+      <Popper
+        open={open}
+        anchorEl={anchorEl}
+        sx={{
+          zIndex: 11000,
+          paddingBottom: "10px",
+        }}
+        placement="top"
+      >
+        <Box
+          sx={{
+            p: 3,
+            backgroundColor: "#fff",
+            border: "1px solid red",
+            position: "relative",
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "100%",
+              left: "47%",
+              width: 0,
+              height: 0,
+              borderLeft: "10px solid transparent",
+              borderRight: "10px solid transparent",
+              borderTop: "10px solid red",
+            }}
+          />
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <HelpOutlineOutlinedIcon color="error" />{" "}
+            <Typography sx={{ marginLeft: "5px" }}>
+              Are you sure to delete {userName}?
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "end",
+              marginTop: "16px",
+            }}
+          >
+            <Button color="secondary" variant="outlined" onClick={handleClose}>
+              No
+            </Button>
+            <Button
+              color="error"
+              variant="outlined"
+              sx={{ marginLeft: "5px" }}
+              onClick={() => {
+                handleDeleteUser(userId);
+              }}
+            >
+              Yes
+            </Button>
+          </Box>
+        </Box>
+      </Popper>
     );
   }
 }

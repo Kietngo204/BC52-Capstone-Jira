@@ -30,3 +30,38 @@ export const getUser = async (username) => {
     throw error.response.data?.content;
   }
 };
+
+export const editUser = async (payload) => {
+  try {
+    const response = await fetcher.put("/Users/editUser", payload);
+    return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
+
+export const getUserByProjectId = async (idProject) => {
+  try {
+    const response = await fetcher.get("/Users/getUser", {
+      params: {
+        idProject: idProject,
+      },
+    });
+    return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
+
+export const deleteUser = async (id) => {
+  try {
+    const response = await fetcher.delete("/Users/deleteUser", {
+      params: {
+        id: id,
+      },
+    });
+    return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
