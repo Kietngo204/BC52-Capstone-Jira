@@ -1,11 +1,4 @@
-import {
-  AppBar,
-  Avatar,
-  Box,
-  IconButton,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Avatar, Box, IconButton, Toolbar } from "@mui/material";
 import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useUserContext } from "../../contexts/UserContext/UserContext";
@@ -54,30 +47,28 @@ export default function Header({ drawerWidth, handleDrawerToggle }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" color={"#000000"}>
-            <Avatar
-              src="/img/jira.png"
-              alt="jira"
-              variant="square"
-              sx={{ width: 100, cursor: "pointer" }}
-              onClick={() => {
-                navigate("/");
-              }}
-            />
-          </Typography>
+          <Avatar
+            src="/img/jira.png"
+            alt="jira"
+            variant="square"
+            sx={{ width: 100, cursor: "pointer" }}
+            onClick={() => {
+              navigate("/");
+            }}
+          />
           <Box
             display={"flex"}
             alignItems={"center"}
             sx={{ cursor: "pointer" }}
-            onClick={() => {
-              navigate("/profile");
-            }}
           >
             <img
               src={currentUser.avatar}
               alt="avatar"
               width={40}
               style={{ borderRadius: "50%" }}
+              onClick={() => {
+                navigate("/profile");
+              }}
             />
             <IconButton
               variant="text"

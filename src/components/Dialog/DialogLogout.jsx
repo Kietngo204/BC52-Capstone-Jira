@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
 } from "@mui/material";
 import React from "react";
@@ -28,21 +27,19 @@ export default function DialogLogout(props) {
         id="alert-dialog-title"
         sx={{ fontWeight: 600, p: 0, pt: 1 }}
       >
-        {"Do you want log out ?"}
+        {"Do you want to log out?"}
       </DialogTitle>
       <DialogContent sx={{ p: 0 }}>
-        <DialogContentText id="alert-dialog-description">
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Avatar
-              src="/img/animation_ask_small.gif"
-              alt="ask"
-              sx={{ width: 150, height: 150 }}
-            />
-          </Box>
-        </DialogContentText>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Avatar
+            src="/img/animation_ask_small.gif"
+            alt="ask"
+            sx={{ width: 150, height: 150 }}
+          />
+        </Box>
       </DialogContent>
       <DialogActions sx={{ justifyContent: "space-evenly" }}>
-        <Button onClick={handleClose} variant="outlined">
+        <Button onClick={handleClose} variant="outlined" size="large">
           No
         </Button>
         <Button
@@ -53,6 +50,7 @@ export default function DialogLogout(props) {
           autoFocus
           color="error"
           variant="contained"
+          size="large"
         >
           Yes
         </Button>
