@@ -58,6 +58,7 @@ export default function DialogCreateTask(props) {
     control,
     setValue,
     formState: { errors },
+    reset,
   } = useForm({
     defaultValues: {
       taskName: "",
@@ -103,6 +104,7 @@ export default function DialogCreateTask(props) {
       queryClient.invalidateQueries("getProjectDetail");
       setTimeout(() => {
         handleClose();
+        reset();
       }, 2000);
     },
   });
