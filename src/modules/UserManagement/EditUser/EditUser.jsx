@@ -111,8 +111,6 @@ export default function EditUser(props) {
     }
   };
 
-  console.log(userAccount);
-
   useEffect(() => {
     // reset();
     if (userAccount) {

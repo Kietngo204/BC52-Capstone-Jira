@@ -26,6 +26,9 @@ export default function SideBar({
 }) {
   const location = useLocation();
   const [selectedItem, setSelectedItem] = useState("Project Management");
+  const [isProjectDetailActive, setIsProjectDetailActive] = useState(false);
+  const [previousProjectDetailPath, setPreviousProjectDetailPath] =
+    useState(null);
 
   const navigate = useNavigate();
 
@@ -34,8 +37,11 @@ export default function SideBar({
     if (text === "Create Project") {
       navigate("/createProject");
     } else if (text === "Project Management") {
-      navigate("/projectManagement");
-    } else if (text === "Project Detail") {
+      navigate("/");
+    } else if (text === "Project Detail" && isProjectDetailActive) {
+      if (previousProjectDetailPath) {
+        navigate(previousProjectDetailPath);
+      }
     } else if (text === "My Profile") {
       navigate("/profile");
     } else if (text === "User Management") {
@@ -50,6 +56,8 @@ export default function SideBar({
     } else if (pathname.startsWith("/projectDetail/")) {
       // Kiểm tra xem địa chỉ bắt đầu bằng '/projectDetail/' để kích hoạt nút
       setSelectedItem("Project Detail");
+      setIsProjectDetailActive(true);
+      setPreviousProjectDetailPath(pathname);
     } else if (pathname === "/profile") {
       setSelectedItem("My Profile");
     } else if (pathname === "/user") {
@@ -101,10 +109,7 @@ export default function SideBar({
 
                 "&:hover": { color: "#ee7e9e" },
               }}
-              disabled={
-                text === "Project Detail" &&
-                !location.pathname.startsWith("/projectDetail/")
-              }
+              disabled={text === "Project Detail" && !isProjectDetailActive}
             >
               <ListItemIcon>{React.createElement(icons[index])}</ListItemIcon>
               <ListItemText primary={text} />

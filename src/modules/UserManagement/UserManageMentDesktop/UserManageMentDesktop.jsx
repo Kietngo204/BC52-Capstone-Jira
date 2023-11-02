@@ -17,6 +17,7 @@ import {
   TablePagination,
   TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -96,7 +97,7 @@ export default function UserManageMentDesktop() {
     setOpenSuccessDeleteUser(false);
   };
 
-  // Dialog CreateUser
+  // Dialog CreateUser and EditUser
   const [openCreateUser, setOpenCreateUser] = useState(false);
   const [openEditUser, setOpenEditUser] = useState(false);
   const [userAccount, setUserAccount] = useState("");
@@ -175,37 +176,62 @@ export default function UserManageMentDesktop() {
   return (
     <>
       <Box height={10} />
-      <Box display={"flex"} justifyContent={"right"} mb={2}>
-        <Box
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography
           sx={{
-            width: 500,
-            maxWidth: "100%",
-            marginRight: "16px",
-            display: "flex",
+            fontWeight: "800",
+            fontSize: "24px",
+            color: "#172B4D",
+            marginBottom: "16px",
           }}
-          component="form"
-          noValidate
-          autoComplete="off"
-          onSubmit={handleSubmit}
         >
-          <TextField
-            fullWidth
-            label="Search Name"
+          USER MANAGEMENT
+        </Typography>
+        <Box display={"flex"} justifyContent={"right"} mb={2}>
+          <Box
+            sx={{
+              width: 500,
+              maxWidth: "100%",
+              marginRight: "16px",
+              display: "flex",
+              justifyContent: "end",
+            }}
+            component="form"
+            noValidate
+            autoComplete="off"
+            onSubmit={handleSubmit}
+          >
+            <TextField
+              label="Search Name"
+              color="secondary"
+              value={searchQuery}
+              onChange={handleChangeValue}
+            />
+            <Button
+              variant="contained"
+              color="info"
+              type="submit"
+              size="small"
+              sx={{ ml: 1 }}
+            >
+              <SearchIcon />
+            </Button>
+          </Box>
+          <Button
+            variant="contained"
             color="secondary"
-            value={searchQuery}
-            onChange={handleChangeValue}
-          />
-          <Button variant="contained" color="info" type="submit">
-            <SearchIcon />
+            onClick={handleClickOpenCreateUser}
+            size="small"
+          >
+            Create User
           </Button>
         </Box>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleClickOpenCreateUser}
-        >
-          Create User
-        </Button>
       </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">

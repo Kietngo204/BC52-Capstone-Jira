@@ -42,6 +42,10 @@ function MainLayout(props) {
           flexGrow: 1,
           p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
+
+          "@media (max-width:1200px)": {
+            p: 0,
+          },
         }}
       >
         <Toolbar />

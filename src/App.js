@@ -18,10 +18,7 @@ function App() {
         <Routes>
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<MainLayout />}>
-              <Route
-                path="/projectManagement"
-                element={<ProjectManagement />}
-              />
+              <Route index element={<ProjectManagement />} />
               <Route path="/createProject" element={<CreateProject />} />
               <Route
                 path="/projectDetail/:projectId"

@@ -44,7 +44,7 @@ export default function ProjectManagementMobile() {
       // Nếu tìm thấy, cập nhật projectSetting với dự án cụ thể
       setProjectSetting(selectedProject);
     } else {
-      // Nếu không tìm thấy, có thể đặt projectSetting thành một giá trị mặc định hoặc thực hiện xử lý khác tùy thuộc vào yêu cầu của bạn.
+      // Nếu không tìm thấy, có thể đặt projectSetting thành một giá trị mặc định hoặc thực hiện xử lý khác
     }
   }, [projectManagement, projectSetting]);
 

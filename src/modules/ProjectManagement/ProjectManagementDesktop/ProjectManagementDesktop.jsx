@@ -20,6 +20,7 @@ import {
   TableRow,
   TextField,
   Tooltip,
+  Typography,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -208,39 +209,64 @@ export default function ProjectManagementDesktop() {
   return (
     <>
       <Box height={10} />
-      <Box display={"flex"} justifyContent={"right"} mb={2}>
-        <Box
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography
           sx={{
-            width: 500,
-            maxWidth: "100%",
-            marginRight: "16px",
-            display: "flex",
+            fontWeight: "800",
+            fontSize: "24px",
+            color: "#172B4D",
+            marginBottom: "16px",
           }}
-          component="form"
-          noValidate
-          autoComplete="off"
-          onSubmit={handleSubmit}
         >
-          <TextField
-            fullWidth
-            label="Search Name"
+          PROJECT MANAGEMENT
+        </Typography>
+        <Box display={"flex"} justifyContent={"right"} mb={2}>
+          <Box
+            sx={{
+              width: 500,
+              maxWidth: "100%",
+              marginRight: "16px",
+              display: "flex",
+              justifyContent: "end",
+            }}
+            component="form"
+            noValidate
+            autoComplete="off"
+            onSubmit={handleSubmit}
+          >
+            <TextField
+              label="Search Name"
+              color="secondary"
+              value={searchQuery}
+              onChange={handleChangeValue}
+            />
+            <Button
+              variant="contained"
+              color="info"
+              type="submit"
+              size="small"
+              sx={{ height: "100%", ml: 1 }}
+            >
+              <SearchIcon />
+            </Button>
+          </Box>
+          <Button
+            variant="contained"
             color="secondary"
-            value={searchQuery}
-            onChange={handleChangeValue}
-          />
-          <Button variant="contained" color="info" type="submit">
-            <SearchIcon />
+            size="small"
+            onClick={() => {
+              navigate("/createProject");
+            }}
+          >
+            Create Project
           </Button>
         </Box>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            navigate("/createProject");
-          }}
-        >
-          Create Project
-        </Button>
       </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">

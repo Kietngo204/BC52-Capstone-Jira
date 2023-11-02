@@ -16,3 +16,5 @@ body {
 #myInput::-webkit-input-placeholder {
   background: transparent !important;
 }
+
+/* .MuiBox-root {padding: 0 !important;} */
