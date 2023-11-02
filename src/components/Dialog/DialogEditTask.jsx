@@ -154,6 +154,10 @@ export default function DialogEditTask(props) {
     },
   });
 
+  const [initialAssignees, setInitialAssignees] = useState(
+    taskDetail.assigness?.map((user) => user.id)
+  );
+
   const {
     watch,
     control,
@@ -222,11 +226,14 @@ export default function DialogEditTask(props) {
     handleUpdateTask({
       ...taskDetail,
       ...updateData,
+      listUserAsign: initialAssignees,
     });
   }, 1000);
 
   useEffect(() => {
     const assignees = taskDetail.assigness?.map((user) => user.id);
+    console.log(assignees);
+
     if (taskDetail) {
       setValue("typeId", taskDetail.taskTypeDetail?.id);
       setValue("taskName", taskDetail.taskName);
@@ -243,6 +250,7 @@ export default function DialogEditTask(props) {
       setValueOriginalEstimate(taskDetail.originalEstimate);
       setValueTimeRemaining(taskDetail.timeTrackingRemaining);
       setValueTimeSpent(taskDetail.timeTrackingSpent);
+      setInitialAssignees(assignees);
     }
   }, [taskDetail, setValue, handleClose]);
 
@@ -286,6 +294,7 @@ export default function DialogEditTask(props) {
                       const response = await handleUpdateTask({
                         ...taskDetail,
                         typeId: newValue,
+                        listUserAsign: initialAssignees,
                       });
                       return response;
                     } catch (error) {
@@ -388,7 +397,9 @@ export default function DialogEditTask(props) {
                     onChange={(e) => {
                       field.onChange(e);
                       const newValue = e.target.value;
-                      debouncedUpdateTask({ taskName: newValue });
+                      debouncedUpdateTask({
+                        taskName: newValue,
+                      });
                     }}
                   />
                 )}
@@ -505,6 +516,7 @@ export default function DialogEditTask(props) {
                       handleUpdateTask({
                         ...taskDetail,
                         description: descriptionValue,
+                        listUserAsign: initialAssignees,
                       });
                       setIsDesc(true);
                     }}
@@ -628,7 +640,11 @@ export default function DialogEditTask(props) {
                         field.onChange(e);
                         const newValue = e.target.value;
 
-                        handleUpdateTask({ ...taskDetail, statusId: newValue });
+                        handleUpdateTask({
+                          ...taskDetail,
+                          statusId: newValue,
+                          listUserAsign: initialAssignees,
+                        });
                       }}
                       MenuProps={{
                         PaperProps: {
@@ -685,6 +701,8 @@ export default function DialogEditTask(props) {
                       onChange={(e) => {
                         field.onChange(e);
                         const newValue = e.target.value;
+                        console.log("newValue", newValue);
+                        console.log("taskDetail", taskDetail);
                         handleUpdateTask({
                           ...taskDetail,
                           listUserAsign: [...newValue],
@@ -745,6 +763,7 @@ export default function DialogEditTask(props) {
                         handleUpdateTask({
                           ...taskDetail,
                           priorityId: newValue,
+                          listUserAsign: initialAssignees,
                         });
                       }}
                       MenuProps={{
