@@ -45,6 +45,7 @@ function MainLayout(props) {
 
           "@media (max-width:1200px)": {
             p: 0,
+            width: "100%",
           },
         }}
       >
