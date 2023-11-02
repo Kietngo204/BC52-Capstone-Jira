@@ -64,7 +64,7 @@ export default function CreateProject() {
       setOpenSuccess(true);
       queryClient.invalidateQueries("projectCategoryCreate");
       setTimeout(() => {
-        navigate("/projectManagement");
+        navigate("/");
       }, 2000);
     },
   });
