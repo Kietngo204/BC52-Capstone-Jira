@@ -17,7 +17,7 @@ import { A } from "../../../../components/styled/styledLink";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { useForm } from "react-hook-form";
-import { object, string } from "yup";
+import { number, object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { signup } from "../../../../apis/userAPI";
@@ -40,7 +40,7 @@ export default function Signup() {
         "Password must be at least 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character"
       ),
     name: string().required("Name must not be empty"),
-    phoneNumber: string().required("Phone Number must not be empty"),
+    phoneNumber: number().positive(),
   });
   const {
     register,

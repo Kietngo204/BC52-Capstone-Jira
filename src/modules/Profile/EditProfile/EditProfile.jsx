@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { object, string } from "yup";
+import { number, object, string } from "yup";
 import {
   Box,
   Button,
@@ -33,7 +33,7 @@ export default function EditProfile({
         "Password must be at least 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character"
       ),
     name: string().required("Name must not be empty"),
-    phoneNumber: string().required("Phone Number must not be empty"),
+    phoneNumber: number().positive(),
   });
 
   const {

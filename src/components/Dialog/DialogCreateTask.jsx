@@ -3,7 +3,6 @@ import {
   Button,
   Chip,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
@@ -22,7 +21,7 @@ import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { object, string, number } from "yup";
+import { object, string } from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createTask, getProject } from "../../apis/projectAPI";
 import { Editor } from "@tinymce/tinymce-react";

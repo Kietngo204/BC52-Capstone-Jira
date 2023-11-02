@@ -21,7 +21,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { editUser } from "../../../apis/userAPI";
-import { object, string, ref } from "yup";
+import { object, string, ref, number } from "yup";
 import { AlertJiraFilled } from "../../../components/styled/styledAlert";
 import { useEffect } from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -56,7 +56,7 @@ export default function EditUser(props) {
       .oneOf([ref("password"), null], "Passwords must match")
       .required("Confirm Password is required"),
     name: string().required("Name must not be empty"),
-    phoneNumber: string().required("Phone Number must not be empty"),
+    phoneNumber: number().positive(),
   });
 
   const {

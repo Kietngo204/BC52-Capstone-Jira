@@ -21,7 +21,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { signup } from "../../../apis/userAPI";
-import { object, string } from "yup";
+import { number, object, string } from "yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { AlertJiraFilled } from "../../../components/styled/styledAlert";
 
@@ -53,7 +53,7 @@ export default function CreateUser(props) {
         "Password must be at least 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character"
       ),
     name: string().required("Name must not be empty"),
-    phoneNumber: string().required("Phone Number must not be empty"),
+    phoneNumber: number().positive(),
   });
   const {
     register,
