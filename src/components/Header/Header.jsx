@@ -1,4 +1,11 @@
-import { AppBar, Avatar, Box, IconButton, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useUserContext } from "../../contexts/UserContext/UserContext";
@@ -56,29 +63,68 @@ export default function Header({ drawerWidth, handleDrawerToggle }) {
               navigate("/");
             }}
           />
-          <Box
-            display={"flex"}
-            alignItems={"center"}
-            sx={{ cursor: "pointer" }}
-          >
-            <img
-              src={currentUser.avatar}
-              alt="avatar"
-              width={40}
-              style={{ borderRadius: "50%" }}
-              onClick={() => {
-                navigate("/profile");
-              }}
-            />
-            <IconButton
-              variant="text"
-              onClick={() => {
-                handleClickOpenLogout();
-              }}
+          {!!currentUser ? (
+            <Box
+              display={"flex"}
+              alignItems={"center"}
+              sx={{ cursor: "pointer" }}
             >
-              <LogoutIcon />
-            </IconButton>
-          </Box>
+              <img
+                src={currentUser.avatar}
+                alt="avatar"
+                width={40}
+                style={{ borderRadius: "50%" }}
+                onClick={() => {
+                  navigate("/profile");
+                }}
+              />
+              <IconButton
+                variant="text"
+                onClick={() => {
+                  handleClickOpenLogout();
+                }}
+              >
+                <LogoutIcon />
+              </IconButton>
+            </Box>
+          ) : (
+            <Box sx={{ display: "flex", color: "#000" }}>
+              <Typography
+                sx={{
+                  m: 1,
+                  pr: 2,
+                  borderRight: "1px solid #000",
+                  cursor: "pointer",
+                  transition: "all 0.5s",
+
+                  ":hover": {
+                    color: "#af3737",
+                  },
+                }}
+                onClick={() => {
+                  navigate("/sign-in");
+                }}
+              >
+                Log in
+              </Typography>
+              <Typography
+                sx={{
+                  m: 1,
+                  cursor: "pointer",
+                  transition: "all 0.5s",
+
+                  ":hover": {
+                    color: "#af3737",
+                  },
+                }}
+                onClick={() => {
+                  navigate("/sign-up");
+                }}
+              >
+                Register
+              </Typography>
+            </Box>
+          )}
         </Toolbar>
       </AppBar>
 
