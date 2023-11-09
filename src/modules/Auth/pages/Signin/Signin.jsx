@@ -1,12 +1,10 @@
 import {
   Box,
-  Button,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
   IconButton,
   Typography,
 } from "@mui/material";
@@ -21,7 +19,7 @@ import { object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { signin } from "../../../../apis/userAPI";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { useUserContext } from "../../../../contexts/UserContext/UserContext";
 
 export default function Signin() {
@@ -44,8 +42,8 @@ export default function Signin() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      email: "kiet123@gmail.com",
+      password: "Az123123!",
     },
     resolver: yupResolver(signinSchema),
     mode: "onTouched",
