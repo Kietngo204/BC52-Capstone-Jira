@@ -36,12 +36,7 @@ export default function Signin() {
     email: string()
       .required("Please enter the email")
       .email("Email is not in the correct format"),
-    password: string()
-      .required("Please enter the password")
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/,
-        "Password must be at least 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character"
-      ),
+    password: string().required("Please enter the password"),
   });
   const {
     register,

@@ -16,9 +16,9 @@ function App() {
     <UserProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<ProjectManagement />} />
-            <Route element={<ProtectedRoute />}>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<ProjectManagement />} />
               <Route path="/createProject" element={<CreateProject />} />
               <Route
                 path="/projectDetail/:projectId"
