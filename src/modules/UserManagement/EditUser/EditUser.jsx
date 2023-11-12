@@ -56,7 +56,7 @@ export default function EditUser(props) {
       .oneOf([ref("password"), null], "Passwords must match")
       .required("Confirm Password is required"),
     name: string().required("Name must not be empty"),
-    phoneNumber: number().positive(),
+    phoneNumber: number().positive().typeError("You can only enter the number"),
   });
 
   const {

@@ -40,7 +40,7 @@ export default function Signup() {
         "Password must be at least 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character"
       ),
     name: string().required("Name must not be empty"),
-    phoneNumber: number().positive(),
+    phoneNumber: number().positive().typeError("You can only enter the number"),
   });
   const {
     register,
